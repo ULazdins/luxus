@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -30,12 +31,22 @@ public class MeterFragment extends Fragment {
             Log.d("MeterFragment", "The light is: " + lux);
 
             outputView.setText("The light is: " + lux);
+
+            LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) maskVisible.getLayoutParams();
+            p.weight = lux;
+            maskVisible.setLayoutParams(p);
+
+            LinearLayout.LayoutParams p2 = (LinearLayout.LayoutParams) maskInvisible.getLayoutParams();
+            p2.weight = 40000 - lux;
+            maskInvisible.setLayoutParams(p2);
         }
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) { }
     };
     private TextView outputView;
+    private View maskVisible;
+    private View maskInvisible;
 
     public MeterFragment() {
         // Required empty public constructor
@@ -47,6 +58,8 @@ public class MeterFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_meter, container, false);
 
         outputView = rootView.findViewById(R.id.output_text);
+        maskVisible = rootView.findViewById(R.id.mask_visible);
+        maskInvisible = rootView.findViewById(R.id.mask_invisible);
 
         return rootView;
     }
