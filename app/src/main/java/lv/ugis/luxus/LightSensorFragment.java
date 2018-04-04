@@ -21,17 +21,34 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeterFragment extends Fragment {
+public class LightSensorFragment extends Fragment {
     private SensorManager mSensorManager;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
+            /*
+                Saskaņā ar dokumentāciju, var mainīties intervālā 0 - 40'000
+                Praktiski izskatās, ka mainās 0 - 10'000. Eksperimentālā kārtā jānoskaidro, kā
+                darbojas uz katra individuāla telefona
+             */
             float lux = event.values[0];
 
-            Log.d("MeterFragment", "The light is: " + lux);
-
+            /*
+                Ieraksta gaismas sensora rādītājus
+                1) Logā (lejā poga "6: Logcat") un
+                2) Uz ekrāna šajā fragmentā
+             */
+            Log.d("LightSensorFragment", "The light is: " + lux);
             outputView.setText("The light is: " + lux);
 
+            /*
+                Paslēpj un parāda spuldzītes. Spuldzītes uz ekrāna ir visu laiku, bet tiek pilnībā
+                vai daļēji aizsegtas ar "maskVisible", kurš ir necaurspīdīgs.
+
+                "maskVisible" izmērs tiek regulēts izmantojot "weight". Visible un Invisible izmērs
+                tiek noteikts proporcionāli - šajā gadījumā attiecīgi "lux" pret "40000 - lux".
+                Piemēram 10000 pret 30000 nozīmē, ka 1/4 no ekrāna būs maskVisible, bet 3/4 - invisible
+             */
             LinearLayout.LayoutParams p = (LinearLayout.LayoutParams) maskVisible.getLayoutParams();
             p.weight = lux;
             maskVisible.setLayoutParams(p);
@@ -48,7 +65,7 @@ public class MeterFragment extends Fragment {
     private View maskVisible;
     private View maskInvisible;
 
-    public MeterFragment() {
+    public LightSensorFragment() {
         // Required empty public constructor
     }
 
@@ -63,6 +80,13 @@ public class MeterFragment extends Fragment {
 
         return rootView;
     }
+
+    /*
+        onStart() un onStop() vienmēr nāk pāros. Viss, kas ir uzstādīts, izveidots onStart vienmēr
+        ir jāsatīra onStop.
+
+        Šinī gadījumā onStart sāk klausīties uz sensoru un onStop aptur klausīšanos.
+     */
 
     @Override
     public void onStart() {

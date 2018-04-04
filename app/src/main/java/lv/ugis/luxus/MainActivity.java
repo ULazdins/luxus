@@ -82,12 +82,19 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            MeterFragment meterFragment = new MeterFragment();
+            /*
+                Dara divas lietas:
+                1) Izveido jaunu *Fragmentu*, kurā ir gaismas spilgtuma mērīšana
+                2) Uzstāda navigācijas joslas virsrakstu
+             */
+
+            // 1
+            LightSensorFragment lightSensorFragment = new LightSensorFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.main_frame, meterFragment);
+            ft.replace(R.id.main_frame, lightSensorFragment);
             ft.commit();
 
-            // set the toolbar title
+            // 2
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle("Mērīsim spožumu");
             }
